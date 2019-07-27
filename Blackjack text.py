@@ -1,89 +1,88 @@
-#blackjack game
-#it is a random number and not a actual card
-#it hand the A for your
 import random
-player_cards_in_hand = []
-dealer_cards_in_hand = []
-score = [0, 0]
-game_over = False
-winning = None
+shoe = []
+p_hand = []
+d_hand = []
+score = [0,0]
+card = None
+game = True
+class card():
+	def __
+with open('shoe.txt','r') as d:
+	for line in d:
+		shoe.append(line.strip('\n'))
+		
+random.shuffle(shoe)
 
+def draw_card(hand):
+	global card
+	card = shoe[0]
+	shoe.pop(0)
+	hand.append(card)
+	return card
 
-def check(cards_in_hand, p):
-	#check if the card are Busted or a Blackjack
-	global game_over
-	global winning
-	global score
-	if score[p] == 21:
-		print('Blackjack!!!')
-		game_over = True
-	elif score[p] > 21:
-		if 'A' == cards_in_hand[-1]:
-			score[p] -= 9
-			print(score[p])
-			if score[p] > 21:
-				print('Busted!!')
-				game_over = True
-		else:
-			print('Busted!!')
-			game_over = True
-			winning = False
-
-
-def random_card(cards_in_hand, p):
-	#pick a random number and add it to the player or dealer hand
-	global score
-	card = random.randint(1, 13)
-	if card == 11:
-		cards_in_hand.append('J')
-		card -= 1
-	elif card == 12:
-		cards_in_hand.append('Q')
-		card -= 2
-	elif card == 13:
-		cards_in_hand.append('K')
-		card -= 3
-	elif card == 1:
-		cards_in_hand.append('A')
+def find_score(p):
+	if card[0] == 'K':
+		score[p] += 10
+	elif card[0] == 'Q':
+		score[p] += 10
+	elif card[0] == 'J':
+		score[p] += 10
+	elif card[0] == '1':
+		score[p] += 10
+	elif card[0] == 'A':
 		if score[p] <= 10:
-			score[p] += 10
+			score[p] += 11
+		else:
+			score[p] += 1
 	else:
-		cards_in_hand.append(card)
-	score[p] += card
+		score[p] += int(card[0])
 
-
-def print_score(name, cards_in_hand, p):
-	#print the hands and the score of the player or the dealer
-	print(name + ':')
-	print('card: {}		score: {}'.format(cards_in_hand, score[p]))
-
-
-for i in range(2):
-	#pick random number 2 time
-	random_card(player_cards_in_hand, 0)
-	random_card(dealer_cards_in_hand, 1)
-print_score('player', player_cards_in_hand, 0)
-print('dealer:')
-print(dealer_cards_in_hand[0])
-check(player_cards_in_hand, 0)
-
-while game_over is False:
-	h_s = input('do you want to hit or stand? ')
-	if h_s == 'hit':
-		random_card(player_cards_in_hand, 0)
-		print_score('player', player_cards_in_hand, 0)
-		check(player_cards_in_hand, 0)
-
-	elif h_s == 'stand':
+def check(p):
+	global game_over
+	if score[p] > 21:
+		print('Busted')
 		game_over = True
+	elif score[p] == 21:
+		print('Blackjack')
+		game_over = True
+		
+while game:
+	game_over = False
+	for draw in range(2):
+		draw_card(p_hand)
+		find_score(0)
+		draw_card(d_hand)
+		find_score(1)
+	print(p_hand)
+	check(0)
+	while game_over == False:
+		h_s = input('stand or hit: ')
+		if h_s == 'hit':
+			draw_card(p_hand)
+			find_score(0)
+			print(p_hand)
+			check(0)
+		elif h_s == 'stand':
+			game_over = True
+		else:
+			print('pleas type hit or stand')
+	while score[1] != 21 and score[1] < 17:
+		draw_card(d_hand)
+		find_score(1)
+	print('dealer')
+	print(d_hand)
+	if score[0] > score[1] or score[1] > 21 and score[0] <= 21:
+		print('you win')
+	elif score[0] == score[1] and score[0] <= 21:
+		print('push')
 	else:
-		print('pls type hit or stand')
-while score[1] < 17 and score[0] != 21:
-	random_card(dealer_cards_in_hand, 1)
-print_score('dealer', dealer_cards_in_hand, 1)
-if (score[0] > score[1] or score[1] > 21) and score[0] <= 21:
-	print('you win!!!!')
-elif score[0] == score[1]:
-	print('tie')
-else:
-	print('you lose')
+		print('you lose')
+	play = input('do you want play again')
+	if play == 'yes':
+		p_hand.clear()
+		d_hand.clear()
+		score = [0,0]
+	elif play == 'no':
+		game = False
+	else:
+		print('pls type yes or no')
