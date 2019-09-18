@@ -5,8 +5,17 @@ d_hand = []
 score = [0,0]
 card = None
 game = True
-class card():
-	def __
+with open('shoe.txt','w+') as file:
+	for suits in ['hearts','diamonds','clubs','spades']:
+		for vaule in range(13):
+			if vaule < 10:
+				file.write('{}_{}\n'.format(str(vaule),suits))
+			elif vaule == 10:
+				file.write('{}_{}\n'.format('J',suits))
+			elif vaule == 11:
+				file.write('{}_{}\n'.format('Q',suits))
+			else:
+				file.write('{}_{}\n'.format('J',suits))
 with open('shoe.txt','r') as d:
 	for line in d:
 		shoe.append(line.strip('\n'))
